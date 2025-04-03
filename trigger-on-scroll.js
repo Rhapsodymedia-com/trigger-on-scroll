@@ -163,7 +163,7 @@
                     scrollObjects.forEach(s => s.isClicked = s.start===0)
                     scrollFunction(pageContainer, currentObjects)
                     pageTop.visited ??= true
-                    console.log('scroll-objects: ', scrollObjects)
+                    window.scrollersArray = scrollObjects
                 }
                 experience.on(CerosSDK.EVENTS.PAGE_CHANGED, pageChangedFunction)
                 
