@@ -63,8 +63,10 @@
                 const updatePinned = (entries=[pageScroll]) => {
                     let entry = entries[0].target ?? entries[0]
                     pinnedContainer.style.position = 'sticky'
+                    pinnedContainer.style.overflow = 'hidden visible'
                     pinnedContainer.style.width = entry.style.width
-                    pinnedContainer.style.height = entry.style.height
+                    pinnedContainer.style.height = '0px'
+                    // pinnedContainer.style.height = entry.style.height
                     pinnedContainer.style.left = entry.style.left
                 }
                 const mutation = new MutationObserver(updatePinned)
