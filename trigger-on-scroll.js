@@ -60,8 +60,8 @@
                     return (parseFloat(elem.style.top) + parentsTopPositions)
                 }
 
-                const updatePinned = (entries=pageScroll) => {
-                    let entry = entries[0].target
+                const updatePinned = (entries=[pageScroll]) => {
+                    let entry = entries[0].target ?? entries[0]
                     pinnedContainer.style.width = entry.style.width
                     pinnedContainer.style.height = entry.style.height
                     pinnedContainer.style.left = entry.style.left
