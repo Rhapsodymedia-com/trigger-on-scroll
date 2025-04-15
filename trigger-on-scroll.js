@@ -60,6 +60,14 @@
                     return (parseFloat(elem.style.top) + parentsTopPositions)
                 }
 
+                const updatePinned = (entries=pageScroll) => {
+                    let entry = entries[0].target
+                    pinnedContainer.style.width = entry.style.width
+                    pinnedContainer.style.height = entry.style.height
+                    pinnedContainer.style.left = entry.style.left
+                }
+                const mutation = new MutationObserver(updatePinned)
+
                 // PAGE VARIABLES
                 let pinnedContainer, pageScroll, currentObjects
                 const pageChangedFunction = pag => {
@@ -68,6 +76,14 @@
                     pinnedContainer = pageTop.querySelector('div.pinned-container')
                     pageContainer = pageTop.querySelector('div.page-container')
                     pageScroll = pageContainer.querySelector('div.page-scroll')
+
+                    if(pinnedContainer==undefined){
+                        pinnedContainer = document.createElement('div')
+                        pinnedContainer.classList.add('pinned-container')
+                        mutation.observe(pageScroll, {attributes: true, attributeFilter: ['style']})
+                        updatePinned()
+                        pageTop.prepend(pinnedContainer)
+                    }
 
                     currentObjects = scrollObjects.filter(scr => scr.object.page.pageNumber==pageNum)
                     if(pageTop.visited===undefined){
