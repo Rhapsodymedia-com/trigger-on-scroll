@@ -62,6 +62,7 @@
 
                 const updatePinned = (entries=[pageScroll]) => {
                     let entry = entries[0].target ?? entries[0]
+                    pinnedContainer.style.position = 'sticky'
                     pinnedContainer.style.width = entry.style.width
                     pinnedContainer.style.height = entry.style.height
                     pinnedContainer.style.left = entry.style.left
