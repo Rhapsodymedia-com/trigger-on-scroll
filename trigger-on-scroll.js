@@ -62,12 +62,14 @@
 
                 const updatePinned = (entries=[pageScroll]) => {
                     let entry = entries[0].target ?? entries[0]
-                    // pinnedContainer.style.position = 'sticky'
+                    pinnedContainer.style.position = 'sticky'
+                    pinnedContainer.style.setProperty('z-index', '999')
                     // pinnedContainer.style.overflow = 'hidden visible'
                     pinnedContainer.style.width = entry.style.width
                     // pinnedContainer.style.height = '0px'
                     pinnedContainer.style.height = entry.style.height
                     pinnedContainer.style.left = entry.style.left
+                    pinnedContainer.style.top = entry.style.top
                 }
                 const mutation = new MutationObserver(updatePinned)
 
@@ -85,7 +87,8 @@
                         pinnedContainer.classList.add('pinned-container')
                         mutation.observe(pageScroll, {attributes: true, attributeFilter: ['style']})
                         updatePinned()
-                        pageTop.prepend(pinnedContainer)
+                        pageContainer.prepend(pinnedContainer)
+                        pageScroll.style.position = 'static'
                     }
 
                     currentObjects = scrollObjects.filter(scr => scr.object.page.pageNumber==pageNum)
