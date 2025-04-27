@@ -30,12 +30,13 @@
                 // CREATING THE BLUEPRINT OF SCROLLING OBJECTS
                 let scrollObjects = []
                 class ScrollObject {
-                    constructor(object, node, parentElem, position, effects, start, end, localValues, isPinned=false, isClicked=false){
+                    constructor(object, node, parentElem, position, effects, margin, start, end, localValues, isPinned=false, isClicked=false){
                         this.object = object;
                         this.node = node;
                         this.parentElem = parentElem;
                         this.position = position;
                         this.effects = effects;
+                        this.margin = margin;
                         this.start = start;
                         this.end = end;
                         this.localValues = localValues;
@@ -145,11 +146,19 @@
                             let scrollRange = allTags.find(tag => tag.includes(strings[1])) ?? defaultRange
                             scrollRange = scrollRange.slice(strings[1].length, scrollRange.length).split(',')
 
-                            let beginning = scrollRange.length<=1 ? '0' : scrollRange[0]
-                            let finish = scrollRange[scrollRange.length-1]
-                            let ranges = [beginning, finish]
+                            // let beginning = scrollRange[0]
+                            let beginning = 0
+                            let finish = scrollRange.length>1 ? scrollRange[scrollRange.length-1] : pageHeight
+                            let ranges = [scrollRange[0], finish]
                             for(let r=0; r<ranges.length; r++){
                                 let number = ranges[r].substring(1)
+                                if(r===0){
+                                    beginning = getDistance(nod) - parseFloat(number)
+                                    if(ranges[r].includes('b'))
+                                        beginning = parseFloat(number)
+                                    if(ranges[r].includes('a'))
+                                        beginning = Math.max(getDistance(nod) - parseFloat(pageAnchors[parseInt(number, 10)].style.top), 0)
+                                }
                                 if(ranges[r].includes('b') && r===0){
                                     ranges[r] = getDistance(nod) - parseFloat(number)
                                     continue
@@ -176,7 +185,7 @@
                             }
                             let pos = {x: onScroll.getX(), y: onScroll.getY()}
 
-                            currentObjects.push(new ScrollObject(onScroll, nod, nod.parentElement, pos, eff, ranges[0], ranges[1], local, pinned, clicked))
+                            currentObjects.push(new ScrollObject(onScroll, nod, nod.parentElement, pos, eff, beginning, ranges[0], ranges[1], local, pinned, clicked))
                         }
                         scrollObjects.push(...currentObjects)
                         pageContainer.addEventListener("scroll", function(){ scrollFunction(pageContainer, currentObjects) })
@@ -228,7 +237,7 @@
                                 }
                             }
                             if(scrollT>=scrollObj.end){
-                                scrollObj.node.style.top = `${scrollObj.end}px`
+                                scrollObj.node.style.top = `${scrollObj.end - scrollObj.margin}px`
                             }
                             if((scrollT<scrollObj.start || scrollT>=scrollObj.end) && scrollObj.node.classList.contains('pin')){
                                 scrollObj.parentElem.append(scrollObj.node)
