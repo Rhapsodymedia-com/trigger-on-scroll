@@ -232,7 +232,7 @@
                                 }
                             }
                             if(scrollT>=scrollObj.end){
-                                scrollObj.node.style.top = `${scrollObj.end - scrollObj.margin}px`
+                                scrollObj.node.style.top = `${scrollObj.end + scrollObj.margin}px`
                             }
                             if((scrollT<scrollObj.start || scrollT>=scrollObj.end) && scrollObj.node.classList.contains('pin')){
                                 scrollObj.parentElem.append(scrollObj.node)
