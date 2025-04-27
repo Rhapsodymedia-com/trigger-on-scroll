@@ -154,6 +154,7 @@
                                 let number = ranges[r].substring(1)
                                 if(r===0){
                                     beginning = getDistance(nod) - parseFloat(number)
+                                    console.log(getDistance(nod), parseFloat(number), beginning)
                                     if(ranges[r].includes('b'))
                                         beginning = parseFloat(number)
                                     if(ranges[r].includes('a'))
