@@ -146,24 +146,18 @@
                             let scrollRange = allTags.find(tag => tag.includes(strings[1])) ?? defaultRange
                             scrollRange = scrollRange.slice(strings[1].length, scrollRange.length).split(',')
 
-                            // let beginning = scrollRange[0]
-                            let beginning = 0
+                            let beginning = getDistance(nod) - parseFloat(scrollRange[0])
                             let finish = scrollRange.length>1 ? scrollRange[scrollRange.length-1] : pageHeight
                             let ranges = [scrollRange[0], finish]
                             for(let r=0; r<ranges.length; r++){
                                 let number = ranges[r].substring(1)
-                                if(r===0){
-                                    beginning = getDistance(nod) - parseFloat(number)
-                                    console.log(getDistance(nod), parseFloat(number), beginning)
-                                    if(ranges[r].includes('b'))
-                                        beginning = parseFloat(number)
-                                    if(ranges[r].includes('a'))
-                                        beginning = Math.max(getDistance(nod) - parseFloat(pageAnchors[parseInt(number, 10)].style.top), 0)
-                                }
                                 if(ranges[r].includes('b') && r===0){
-                                    ranges[r] = getDistance(nod) - parseFloat(number)
+                                    beginning = parseFloat(number)
+                                    ranges[r] = getDistance(nod) - beginning
                                     continue
                                 }
+                                if(ranges[r].includes('a') && r===0)
+                                    beginning = Math.max(getDistance(nod) - parseFloat(pageAnchors[parseInt(number, 10)].style.top), 0)
                                 if(ranges[r].includes('a')){
                                     let anchor = parseInt(number, 10)
                                     ranges[r] = pageAnchors[anchor].style.top
