@@ -83,14 +83,15 @@
                     pageContainer = pageTop.querySelector('div.page-container')
                     pageScroll = pageContainer.querySelector('div.page-scroll')
 
-                    if(pinnedContainer==undefined){
-                        pinnedContainer = document.createElement('div')
-                        pinnedContainer.classList.add('pinned-container')
-                        mutation.observe(pageScroll, {attributes: true, attributeFilter: ['style']})
-                        updatePinned()
-                        pageContainer.prepend(pinnedContainer)
-                        pageScroll.style.position = 'static'
-                    }
+                    let isContainer = pinnedContainer==undefined
+                    // if(pinnedContainer==undefined){
+                    //     pinnedContainer = document.createElement('div')
+                    //     pinnedContainer.classList.add('pinned-container')
+                    //     mutation.observe(pageScroll, {attributes: true, attributeFilter: ['style']})
+                    //     updatePinned()
+                    //     pageContainer.prepend(pinnedContainer)
+                    //     pageScroll.style.position = 'static'
+                    // }
 
                     currentObjects = scrollObjects.filter(scr => scr.object.page.pageNumber==pageNum)
                     if(pageTop.visited===undefined){
@@ -223,9 +224,15 @@
                         if(scrollObj.isPinned){
                             if(scrollT<scrollObj.start){
                                 scrollObj.node.style.top = `${scrollObj.position.y}px`
+                                scrollObj.node.style.position = 'absolute'
                             }
                             if(scrollT>=scrollObj.start && scrollT<scrollObj.end){
-                                scrollObj.node.style.top = `${scrollObj.position.y-scrollObj.start}px`
+                                if(isContainer===true){
+                                    scrollObj.node.style.position = 'fixed'
+                                }
+                                else{
+                                    scrollObj.node.style.top = `${scrollObj.position.y-scrollObj.start}px`
+                                }
                                 if(!scrollObj.node.classList.contains('pin')){
                                     pinnedContainer.append(scrollObj.node)
                                     scrollObj.node.classList.add('pin')
@@ -233,6 +240,7 @@
                             }
                             if(scrollT>=scrollObj.end){
                                 scrollObj.node.style.top = `${scrollObj.end + scrollObj.margin}px`
+                                scrollObj.node.style.position = 'absolute'
                             }
                             if((scrollT<scrollObj.start || scrollT>=scrollObj.end) && scrollObj.node.classList.contains('pin')){
                                 scrollObj.parentElem.append(scrollObj.node)
