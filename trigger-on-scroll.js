@@ -76,6 +76,7 @@
 
                 // PAGE VARIABLES
                 let pinnedContainer, pageScroll, currentObjects
+                let isContainer = true
                 const pageChangedFunction = pag => {
                     pageNum = pag.getPageNumber()
                     pageTop = document.querySelector('div.page-viewport.top')
@@ -83,7 +84,7 @@
                     pageContainer = pageTop.querySelector('div.page-container')
                     pageScroll = pageContainer.querySelector('div.page-scroll')
 
-                    let isContainer = pinnedContainer==undefined
+                    isContainer = pinnedContainer==undefined
                     // if(pinnedContainer==undefined){
                     //     pinnedContainer = document.createElement('div')
                     //     pinnedContainer.classList.add('pinned-container')
