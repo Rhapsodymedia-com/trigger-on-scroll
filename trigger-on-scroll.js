@@ -230,6 +230,7 @@
                             if(scrollT>=scrollObj.start && scrollT<scrollObj.end){
                                 if(isContainer===true){
                                     scrollObj.node.style.position = 'fixed'
+                                    scrollObj.node.style.top = `${scrollObj.margin}px`
                                 }
                                 else{
                                     scrollObj.node.style.top = `${scrollObj.position.y-scrollObj.start}px`
