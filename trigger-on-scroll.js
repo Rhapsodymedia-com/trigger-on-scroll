@@ -67,8 +67,8 @@
                     pinnedContainer.style.setProperty('z-index', '999')
                     // pinnedContainer.style.overflow = 'hidden visible'
                     pinnedContainer.style.width = entry.style.width
-                    // pinnedContainer.style.height = '0px'
-                    pinnedContainer.style.height = entry.style.height
+                    pinnedContainer.style.height = '0px'
+                    // pinnedContainer.style.height = entry.style.height
                     pinnedContainer.style.left = entry.style.left
                     pinnedContainer.style.top = entry.style.top
                 }
