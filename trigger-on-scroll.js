@@ -233,10 +233,10 @@
                                 }
                                 else{
                                     scrollObj.node.style.top = `${scrollObj.position.y-scrollObj.start}px`
-                                }
-                                if(!scrollObj.node.classList.contains('pin')){
-                                    pinnedContainer.append(scrollObj.node)
-                                    scrollObj.node.classList.add('pin')
+                                    if(!scrollObj.node.classList.contains('pin')){
+                                        pinnedContainer.append(scrollObj.node)
+                                        scrollObj.node.classList.add('pin')
+                                    }
                                 }
                             }
                             if(scrollT>=scrollObj.end){
