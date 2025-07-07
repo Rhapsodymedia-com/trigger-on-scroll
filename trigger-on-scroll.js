@@ -147,6 +147,7 @@
                             let defaultRange = `${strings[1]}0,${pageHeight}`
                             let scrollRange = allTags.find(tag => tag.includes(strings[1])) ?? defaultRange
                             scrollRange = scrollRange.slice(strings[1].length, scrollRange.length).split(',')
+                            console.log(strings[1].length, scrollRange)
 
                             let beginning = getDistance(nod) - parseFloat(scrollRange[0])
                             let finish = scrollRange.length>1 ? scrollRange[scrollRange.length-1] : pageHeight
@@ -172,6 +173,7 @@
                             if(ranges.includes(NaN))
                                 ranges = [0, pageHeight]
                             let clicked = ranges[0]===0
+                            console.log(ranges)
 
                             // DEFINING INITIAL POSITION
                             if(onScroll.isGroup()) {
