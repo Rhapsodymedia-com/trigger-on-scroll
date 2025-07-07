@@ -156,8 +156,10 @@
                             let ranges = [scrollRange[0], finish]
                             console.log(ranges)
                             for(let r=0; r<ranges.length; r++){
+                                if(typeof ranges[r]!='string')
+                                    continue
                                 console.log(ranges[r])
-                                const number = ranges[r].toString().substring(1)
+                                const number = ranges[r].substring(1)
                                 console.log(number)
                                 if(ranges[r].includes('b') && r===0){
                                     beginning = parseFloat(number)
