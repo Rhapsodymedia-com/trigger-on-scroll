@@ -148,10 +148,13 @@
                             let scrollRange = allTags.find(tag => tag.includes(strings[1])) ?? defaultRange
                             scrollRange = scrollRange.slice(strings[1].length, scrollRange.length).split(',')
                             console.log(strings[1].length, scrollRange)
-
+                            
                             let beginning = getDistance(nod) - parseFloat(scrollRange[0])
+                            console.log(beginning)
                             let finish = scrollRange.length>1 ? scrollRange[scrollRange.length-1] : pageHeight
+                            console.log(finish)
                             let ranges = [scrollRange[0], finish]
+                            console.log(ranges)
                             for(let r=0; r<ranges.length; r++){
                                 let number = ranges[r].substring(1)
                                 if(ranges[r].includes('b') && r===0){
@@ -169,9 +172,12 @@
                                 if(ranges[r].includes('+') && r==ranges.length-1)
                                     ranges[r] = parseFloat(number) + parseFloat(ranges[0])
                             }
+                            console.log(ranges)
                             ranges = ranges.map(ran => parseFloat(ran))
+                            console.log(ranges)
                             if(ranges.includes(NaN))
                                 ranges = [0, pageHeight]
+                            console.log(ranges)
                             let clicked = ranges[0]===0
                             console.log(ranges)
 
