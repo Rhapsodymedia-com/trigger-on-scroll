@@ -3,13 +3,13 @@
     require.config({
         paths: {
             CerosSDK: '//sdk.ceros.com/standalone-player-sdk-v5.min'
-        } 
+        }
     });
     require(['CerosSDK'], function (CerosSDK) {
         CerosSDK.findExperience()
             .fail(function (error) {
                 console.error(error);
-            }) 
+            })
             .done(function (experience) {
                 let pageTop = document.querySelector("div.page-viewport.top")
                 let pageContainer = pageTop.querySelector('div.page-container')
@@ -147,25 +147,18 @@
                             let defaultRange = `${strings[1]}0,${pageHeight}`
                             let scrollRange = allTags.find(tag => tag.includes(strings[1])) ?? defaultRange
                             scrollRange = scrollRange.slice(strings[1].length, scrollRange.length).split(',')
-                            console.log(strings[1].length, scrollRange)
                             
                             let beginning = getDistance(nod) - parseFloat(scrollRange[0])
-                            console.log(nod, getDistance(nod), beginning)
                             let finish = scrollRange.length>1 ? scrollRange[scrollRange.length-1] : pageHeight
-                            console.log(finish)
                             let ranges = [scrollRange[0], finish]
-                            console.log(ranges)
                             for(let r=0; r<ranges.length; r++){
                                 if(typeof ranges[r]!='string')
                                     continue
-                                console.log(ranges[r])
+
                                 const number = ranges[r].substring(1)
-                                console.log(number)
                                 if(ranges[r].includes('b') && r===0){
                                     beginning = parseFloat(number)
-                                    console.log('loop1', beginning)
                                     ranges[r] = getDistance(nod) - beginning
-                                    console.log('loop2', ranges[r])
                                     continue
                                 }
                                 if(ranges[r].includes('a') && r===0)
@@ -178,14 +171,10 @@
                                 if(ranges[r].includes('+') && r==ranges.length-1)
                                     ranges[r] = parseFloat(number) + parseFloat(ranges[0])
                             }
-                            console.log(ranges)
                             ranges = ranges.map(ran => parseFloat(ran))
-                            console.log(ranges)
                             if(ranges.includes(NaN))
                                 ranges = [0, pageHeight]
-                            console.log(ranges)
                             let clicked = ranges[0]===0
-                            console.log(ranges)
 
                             // DEFINING INITIAL POSITION
                             if(onScroll.isGroup()) {
