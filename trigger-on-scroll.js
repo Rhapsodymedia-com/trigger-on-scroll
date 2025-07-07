@@ -156,12 +156,14 @@
                             let ranges = [scrollRange[0], finish]
                             console.log(ranges)
                             for(let r=0; r<ranges.length; r++){
+                                console.log(ranges[r])
                                 let number = ranges[r].substring(1)
                                 console.log(number)
                                 if(ranges[r].includes('b') && r===0){
                                     beginning = parseFloat(number)
-                                    console.log('loop', beginning)
+                                    console.log('loop1', beginning)
                                     ranges[r] = getDistance(nod) - beginning
+                                    console.log('loop2', ranges[r])
                                     continue
                                 }
                                 if(ranges[r].includes('a') && r===0)
