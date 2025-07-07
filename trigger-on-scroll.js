@@ -157,8 +157,10 @@
                             console.log(ranges)
                             for(let r=0; r<ranges.length; r++){
                                 let number = ranges[r].substring(1)
+                                console.log(number)
                                 if(ranges[r].includes('b') && r===0){
                                     beginning = parseFloat(number)
+                                    console.log('loop', beginning)
                                     ranges[r] = getDistance(nod) - beginning
                                     continue
                                 }
