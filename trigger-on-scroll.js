@@ -157,7 +157,7 @@
                             console.log(ranges)
                             for(let r=0; r<ranges.length; r++){
                                 console.log(ranges[r])
-                                let number = ranges[r].substring(1)
+                                const number = ranges[r].toString().substring(1)
                                 console.log(number)
                                 if(ranges[r].includes('b') && r===0){
                                     beginning = parseFloat(number)
