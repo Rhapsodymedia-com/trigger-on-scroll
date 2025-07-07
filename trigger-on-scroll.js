@@ -150,7 +150,7 @@
                             console.log(strings[1].length, scrollRange)
                             
                             let beginning = getDistance(nod) - parseFloat(scrollRange[0])
-                            console.log(beginning)
+                            console.log(nod, getDistance(nod), beginning)
                             let finish = scrollRange.length>1 ? scrollRange[scrollRange.length-1] : pageHeight
                             console.log(finish)
                             let ranges = [scrollRange[0], finish]
