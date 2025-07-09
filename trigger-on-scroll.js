@@ -15,7 +15,7 @@
                 let pageContainer = pageTop.querySelector('div.page-container')
                 let pageScale = 1
                 const updatePageScale = () => {
-                    let zoomValue = pageTop.style.zoom ?? pageTop.style.transform.split('(')[1].split(',')[0]
+                    let zoomValue = pageTop.style.zoom ?? pageTop.style.transform.split('(')[1].split(',')[0]  // do poprawy -> ')'
                     pageScale = parseFloat(zoomValue) || 1
                 }
                 updatePageScale()
@@ -63,6 +63,7 @@
                 }
 
                 // ALTERNATIVE BEHAVIOUR WHEN THE EXPERIENCE IS EMBEDDED
+                let newScroll = 0
                 const parentPageFunction = event => {
                     if(event.data==undefined || event.data==='Ceros experience has been loaded' || typeof event.data!='string')
                         return
@@ -70,7 +71,7 @@
                     const datas = JSON.parse(event.data) || {isScrollTrigger: false}
                     if(datas.isScrollTrigger===true){
                         updatePageScale()
-                        let newScroll = Math.max(-(datas.scrollValue/pageScale), 0)
+                        newScroll = Math.max(-(datas.scrollValue/pageScale), 0)
                         console.log(newScroll)
                         scrollFunction(newScroll, scrollObjects)
                     }
@@ -108,6 +109,11 @@
                     pinnedContainer.style.top = entry.style.top
                 }
                 const mutation = new MutationObserver(updatePinned)
+
+                const tick = () => {
+                    pinnedContainer.style.top = `${newScroll}px`
+                    requestAnimationFrame(tick)
+                }
 
                 // PAGE VARIABLES
                 let pinnedContainer, pageScroll, currentObjects
@@ -226,6 +232,8 @@
 
                         if(pageContainer.style.overflow!='hidden')
                             pageContainer.addEventListener("scroll", function(){ scrollFunction(pageContainer, currentObjects) })
+                        else
+                            tick()
                     }
                     
                     scrollObjects.forEach(s => s.isClicked = s.start===0)
@@ -252,8 +260,8 @@
                 const scrollFunction = (pageCont, scrollObjs) => {
                     const scrollT = pageCont.scrollTop ?? pageCont
 
-                    if(pageContainer.style.overflow=='hidden')
-                        pinnedContainer.style.top = `${scrollT}px`
+                    // if(pageContainer.style.overflow=='hidden')
+                    //     pinnedContainer.style.top = `${scrollT}px`
                     
                     for(let scrollObj of scrollObjs){
                         let allEffects = scrollObj.effects
