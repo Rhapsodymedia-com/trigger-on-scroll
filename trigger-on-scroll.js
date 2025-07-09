@@ -252,7 +252,7 @@
                 const scrollFunction = (pageCont, scrollObjs) => {
                     const scrollT = pageCont.scrollTop ?? pageCont
 
-                    if(pageContainer.style.overflow!='hidden')
+                    if(pageContainer.style.overflow=='hidden')
                         pinnedContainer.style.top = `${scrollT}px`
                     
                     for(let scrollObj of scrollObjs){
