@@ -70,7 +70,7 @@
                     const datas = JSON.parse(event.data) || {isScrollTrigger: false}
                     if(datas.isScrollTrigger===true){
                         updatePageScale()
-                        let newScroll = Math.max(datas.scroll/pageScale - datas.above/pageScale, 0)
+                        let newScroll = Math.max(-(datas.scrollValue/pageScale), 0)
                         console.log(newScroll)
                         scrollFunction(newScroll, scrollObjects)
                     }
