@@ -8,15 +8,32 @@
     require(['CerosSDK'], function (CerosSDK) {
         CerosSDK.findExperience()
             .fail(function (error) {
-                console.error(error);
+                console.error(error)
             })
             .done(function (experience) {
                 let pageTop = document.querySelector("div.page-viewport.top")
                 let pageContainer = pageTop.querySelector('div.page-container')
-                
-                // ---------------------
-                // NEW TRIGGER ON SCROLL
-                // ---------------------
+                let pageScale = 1
+                const updatePageScale = () => {
+                    let zoomValue = pageTop.style.zoom ?? pageTop.style.transform.split('(')[1].split(',')[0]
+                    pageScale = parseFloat(zoomValue) || 1
+                }
+                updatePageScale()
+
+                // FIXING THE ISSUE WITH PINNED ELEMENTS
+                let pinContainer = $(document.querySelector('.pinned-container'))[0]
+                for(const prop in pinContainer){
+                    if(prop.includes('jQuery')===true){
+                        const listener = pinContainer[prop].handle
+                        const allEvents = pinContainer[prop].events
+                        for(const eventType in allEvents){
+                            let eventTypes = allEvents[eventType]
+                            for(let q=0; q<eventTypes.length; q++)
+                                pinContainer.removeEventListener(eventTypes[q].type, listener)
+                        }
+                        break
+                    }
+                }
 
                 // BASIC VARIABLES
                 let allOnScrolls = experience.findLayersByTag("on-scroll").layers
@@ -43,6 +60,24 @@
                         this.isPinned = isPinned;
                         this.isClicked = isClicked;
                     }
+                }
+
+                // ALTERNATIVE BEHAVIOUR WHEN THE EXPERIENCE IS EMBEDDED
+                const parentPageFunction = event => {
+                    if(event.data==undefined || event.data==='Ceros experience has been loaded' || typeof event.data!='string')
+                        return
+
+                    const datas = JSON.parse(event.data) || {isScrollTrigger: false}
+                    if(datas.isScrollTrigger===true){
+                        updatePageScale()
+                        let newScroll = Math.max(datas.scroll/pageScale - datas.above/pageScale, 0)
+                        console.log(newScroll)
+                        scrollFunction(newScroll, scrollObjects)
+                    }
+                }
+                if(window.cerosContext.isEmbedded===true){
+                    window.top.postMessage('Ceros experience has been loaded', '*')
+                    window.addEventListener('message', parentPageFunction)
                 }
 
                 // MISCELLANEOUS FUNCTIONS
@@ -188,7 +223,9 @@
                             currentObjects.push(new ScrollObject(onScroll, nod, nod.parentElement, pos, eff, beginning, ranges[0], ranges[1], local, pinned, clicked))
                         }
                         scrollObjects.push(...currentObjects)
-                        pageContainer.addEventListener("scroll", function(){ scrollFunction(pageContainer, currentObjects) })
+
+                        if(pageContainer.style.overflow!='hidden')
+                            pageContainer.addEventListener("scroll", function(){ scrollFunction(pageContainer, currentObjects) })
                     }
                     
                     scrollObjects.forEach(s => s.isClicked = s.start===0)
@@ -208,12 +245,12 @@
                     'scale-width',
                     'scale-height',
                     'opacity',
-                    'crop-rectangle', 
+                    'crop-rectangle',
                     'crop-circle'
                 ]
                     
                 const scrollFunction = (pageCont, scrollObjs) => {
-                    const scrollT = pageCont.scrollTop
+                    const scrollT = pageCont.scrollTop ?? pageCont
                     
                     for(let scrollObj of scrollObjs){
                         let allEffects = scrollObj.effects
