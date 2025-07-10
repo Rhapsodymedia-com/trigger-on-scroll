@@ -130,7 +130,7 @@
                     pinnedContainer = pageTop.querySelector('div.pinned-container')
                     pageContainer = pageTop.querySelector('div.page-container')
                     pageScroll = pageContainer.querySelector('div.page-scroll')
-                    removePinnedContainerListeners()
+                    // removePinnedContainerListeners()
 
                     isContainer = pinnedContainer==undefined
                     // if(pinnedContainer==undefined){
