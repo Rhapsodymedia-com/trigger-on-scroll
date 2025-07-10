@@ -12,26 +12,32 @@
             })
             .done(function (experience) {
                 let pageTop = document.querySelector("div.page-viewport.top")
+                let pinnedContainer = pageTop.querySelector('div.pinned-container')
                 let pageContainer = pageTop.querySelector('div.page-container')
+                let pageScroll = pageContainer.querySelector('div.page-scroll')
+
+                // UPDATING PAGE SCALE VALUE
                 let pageScale = 1
                 const updatePageScale = () => {
-                    let zoomValue = pageTop.style.zoom ?? pageTop.style.transform.split('(')[1].split(',')[0]  // do poprawy -> ')'
+                    let zoomValue = pageTop.style.zoom ?? pageTop.style.transform.split('(')[1].split(')')[0].split(',')[0]
                     pageScale = parseFloat(zoomValue) || 1
                 }
                 updatePageScale()
 
                 // FIXING THE ISSUE WITH PINNED ELEMENTS
-                let pinContainer = $(document.querySelector('.pinned-container'))[0]
-                for(const prop in pinContainer){
-                    if(prop.includes('jQuery')===true){
-                        const listener = pinContainer[prop].handle
-                        const allEvents = pinContainer[prop].events
-                        for(const eventType in allEvents){
-                            let eventTypes = allEvents[eventType]
-                            for(let q=0; q<eventTypes.length; q++)
-                                pinContainer.removeEventListener(eventTypes[q].type, listener)
+                const removePinnedContainerListeners = () => {
+                    let pinContainer = $(document.querySelector('.pinned-container'))[0]
+                    for(const prop in pinContainer){
+                        if(prop.includes('jQuery')===true){
+                            const listener = pinContainer[prop].handle
+                            const allEvents = pinContainer[prop].events
+                            for(const eventType in allEvents){
+                                let eventTypes = allEvents[eventType]
+                                for(let q=0; q<eventTypes.length; q++)
+                                    pinnedContainer.removeEventListener(eventTypes[q].type, listener)
+                            }
+                            break
                         }
-                        break
                     }
                 }
 
@@ -116,7 +122,7 @@
                 }
 
                 // PAGE VARIABLES
-                let pinnedContainer, pageScroll, currentObjects
+                let currentObjects
                 let isContainer = true
                 const pageChangedFunction = pag => {
                     pageNum = pag.getPageNumber()
@@ -124,6 +130,7 @@
                     pinnedContainer = pageTop.querySelector('div.pinned-container')
                     pageContainer = pageTop.querySelector('div.page-container')
                     pageScroll = pageContainer.querySelector('div.page-scroll')
+                    removePinnedContainerListeners()
 
                     isContainer = pinnedContainer==undefined
                     // if(pinnedContainer==undefined){
@@ -235,7 +242,7 @@
                         else
                             tick()
                     }
-                    
+
                     scrollObjects.forEach(s => s.isClicked = s.start===0)
                     scrollFunction(pageContainer, currentObjects)
                     pageTop.visited ??= true
