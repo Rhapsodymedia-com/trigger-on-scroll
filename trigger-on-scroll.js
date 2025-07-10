@@ -79,10 +79,12 @@
                         updatePageScale()
                         newScroll = Math.max(-(datas.scrollValue/pageScale), 0)
                         console.log(newScroll)
-                        scrollFunction(newScroll, scrollObjects)
+                        // scrollFunction(newScroll, scrollObjects)
+                        pageContainer.scrollTop = newScroll
                     }
                 }
                 if(window.cerosContext.isEmbedded===true){
+                    removePinnedContainerListeners()
                     window.top.postMessage('Ceros experience has been loaded', '*')
                     window.addEventListener('message', parentPageFunction)
                 }
@@ -237,10 +239,10 @@
                         }
                         scrollObjects.push(...currentObjects)
 
-                        if(pageContainer.style.overflow!='hidden')
-                            pageContainer.addEventListener("scroll", function(){ scrollFunction(pageContainer, currentObjects) })
-                        else
-                            tick()
+                        pageContainer.addEventListener("scroll", function(){ scrollFunction(pageContainer, currentObjects) })
+                        // if(pageContainer.style.overflow!='hidden')
+                        // else
+                        //     removePinnedContainerListeners()
                     }
 
                     scrollObjects.forEach(s => s.isClicked = s.start===0)
