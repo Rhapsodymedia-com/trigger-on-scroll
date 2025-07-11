@@ -124,7 +124,7 @@
                     pageContainer = pageTop.querySelector('div.page-container')
                     pageScroll = pageContainer.querySelector('div.page-scroll')
 
-                    if(pinnedContainer===false){
+                    if(pinnedContainer==undefined){
                         pinnedContainer = document.createElement('div')
                         pinnedContainer.classList.add('pinned-container')
                         pageContainer.prepend(pinnedContainer)
