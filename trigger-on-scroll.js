@@ -20,7 +20,7 @@
                 let pageScale = 1
                 const updatePageScale = () => {
                     let zoomValue = pageTop.style.zoom ?? pageTop.style.transform.split('(')[1].split(')')[0].split(',')[0]
-                    console.log(zoomValue)
+                    console.log(pageTop.style.transform.split('(')[1].split(')')[0], pageTop.style.transform.split('(')[1], zoomValue)
                     pageScale = parseFloat(zoomValue) || 1
                 }
                 window.addEventListener('resize', updatePageScale)
