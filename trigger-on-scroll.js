@@ -78,8 +78,6 @@
                     if(datas.isScrollTrigger===true){
                         updatePageScale()
                         newScroll = Math.max(-(datas.scrollValue/pageScale), 0)
-                        console.log(newScroll)
-                        // scrollFunction(newScroll, scrollObjects)
                         pageContainer.scrollTop = newScroll
                     }
                 }
@@ -109,40 +107,30 @@
                     let entry = entries[0].target ?? entries[0]
                     pinnedContainer.style.position = 'sticky'
                     pinnedContainer.style.setProperty('z-index', '999')
-                    // pinnedContainer.style.overflow = 'hidden visible'
+                    pinnedContainer.style.overflow = 'visible'
                     pinnedContainer.style.width = entry.style.width
                     pinnedContainer.style.height = '0px'
-                    // pinnedContainer.style.height = entry.style.height
                     pinnedContainer.style.left = entry.style.left
                     pinnedContainer.style.top = entry.style.top
                 }
                 const mutation = new MutationObserver(updatePinned)
 
-                const tick = () => {
-                    pinnedContainer.style.top = `${newScroll}px`
-                    requestAnimationFrame(tick)
-                }
-
                 // PAGE VARIABLES
                 let currentObjects
-                let isContainer = true
                 const pageChangedFunction = pag => {
                     pageNum = pag.getPageNumber()
                     pageTop = document.querySelector('div.page-viewport.top')
                     pinnedContainer = pageTop.querySelector('div.pinned-container')
                     pageContainer = pageTop.querySelector('div.page-container')
                     pageScroll = pageContainer.querySelector('div.page-scroll')
-                    // removePinnedContainerListeners()
 
-                    isContainer = pinnedContainer==undefined
-                    // if(pinnedContainer==undefined){
-                    //     pinnedContainer = document.createElement('div')
-                    //     pinnedContainer.classList.add('pinned-container')
-                    //     mutation.observe(pageScroll, {attributes: true, attributeFilter: ['style']})
-                    //     updatePinned()
-                    //     pageContainer.prepend(pinnedContainer)
-                    //     pageScroll.style.position = 'static'
-                    // }
+                    if(pinnedContainer===false){
+                        pinnedContainer = document.createElement('div')
+                        pinnedContainer.classList.add('pinned-container')
+                        pageContainer.prepend(pinnedContainer)
+                        mutation.observe(pageScroll, {attributes: true, attributeFilter: ['style']})
+                        pageScroll.style.position = 'static'
+                    }
 
                     currentObjects = scrollObjects.filter(scr => scr.object.page.pageNumber==pageNum)
                     if(pageTop.visited===undefined){
@@ -267,10 +255,7 @@
                 ]
                     
                 const scrollFunction = (pageCont, scrollObjs) => {
-                    const scrollT = pageCont.scrollTop ?? pageCont
-
-                    // if(pageContainer.style.overflow=='hidden')
-                    //     pinnedContainer.style.top = `${scrollT}px`
+                    const scrollT = pageCont.scrollTop
                     
                     for(let scrollObj of scrollObjs){
                         let allEffects = scrollObj.effects
@@ -285,24 +270,16 @@
                         if(scrollObj.isPinned){
                             if(scrollT<scrollObj.start){
                                 scrollObj.node.style.top = `${scrollObj.position.y}px`
-                                scrollObj.node.style.position = 'absolute'
                             }
                             if(scrollT>=scrollObj.start && scrollT<scrollObj.end){
-                                if(isContainer===true){
-                                    scrollObj.node.style.position = 'fixed'
-                                    scrollObj.node.style.top = `${scrollObj.margin}px`
-                                }
-                                else{
-                                    scrollObj.node.style.top = `${scrollObj.position.y-scrollObj.start}px`
-                                    if(!scrollObj.node.classList.contains('pin')){
-                                        pinnedContainer.append(scrollObj.node)
-                                        scrollObj.node.classList.add('pin')
-                                    }
+                                scrollObj.node.style.top = `${scrollObj.margin}px`
+                                if(!scrollObj.node.classList.contains('pin')){
+                                    pinnedContainer.append(scrollObj.node)
+                                    scrollObj.node.classList.add('pin')
                                 }
                             }
                             if(scrollT>=scrollObj.end){
                                 scrollObj.node.style.top = `${scrollObj.end + scrollObj.margin}px`
-                                scrollObj.node.style.position = 'absolute'
                             }
                             if((scrollT<scrollObj.start || scrollT>=scrollObj.end) && scrollObj.node.classList.contains('pin')){
                                 scrollObj.parentElem.append(scrollObj.node)
