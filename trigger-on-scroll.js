@@ -16,8 +16,39 @@
                 let pageContainer = pageTop.querySelector('div.page-container')
                 let pageScroll = pageContainer.querySelector('div.page-scroll')
 
-                // UPDATING PAGE SCALE VALUE
+                // CHECKING IF THERE IS PINNED CONTAINER
+                let isContainer = pinnedContainer!=undefined
+                let appendingContainer = isContainer===true ? pinnedContainer : pageContainer 
+
+                // BASIC VARIABLES
+                let allOnScrolls = experience.findLayersByTag("on-scroll").layers
+                let pageNum =  experience.getCurrentPage().getPageNumber()
+                let pageHeight = experience.getCurrentPage().getHeight()
                 let pageScale = 1
+
+                // SCROLL ELEMENTS VARIABLES
+                let strings = ['scroll-effect:', 'scroll-range:']
+                let allTags = []
+
+                // CREATING THE BLUEPRINT OF SCROLLING OBJECTS
+                let scrollObjects = []
+                class ScrollObject {
+                    constructor(object, node, parentElem, position, effects, margin, start, end, localValues, isPinned=false, isClicked=false){
+                        this.object = object;
+                        this.node = node;
+                        this.parentElem = parentElem;
+                        this.position = position;
+                        this.effects = effects;
+                        this.margin = margin;
+                        this.start = start;
+                        this.end = end;
+                        this.localValues = localValues;
+                        this.isPinned = isPinned;
+                        this.isClicked = isClicked;
+                    }
+                }
+
+                // UPDATING PAGE SCALE VALUE
                 const updatePageScale = () => {
                     let isZoom = pageTop.style.zoom!=undefined && pageTop.style.zoom!=''
                     let zoomValue = isZoom===true ? pageTop.style.zoom : pageTop.style.transform.split('(')[1].split(')')[0].split(',')[0]
@@ -43,45 +74,14 @@
                     }
                 }
 
-                // BASIC VARIABLES
-                let allOnScrolls = experience.findLayersByTag("on-scroll").layers
-                let pageNum =  experience.getCurrentPage().getPageNumber()
-                let pageHeight = experience.getCurrentPage().getHeight()
-
-                // SCROLL ELEMENTS VARIABLES
-                let strings = ['scroll-effect:', 'scroll-range:']
-                let allTags = []
-
-                // CREATING THE BLUEPRINT OF SCROLLING OBJECTS
-                let scrollObjects = []
-                class ScrollObject {
-                    constructor(object, node, parentElem, position, effects, margin, start, end, localValues, isPinned=false, isClicked=false){
-                        this.object = object;
-                        this.node = node;
-                        this.parentElem = parentElem;
-                        this.position = position;
-                        this.effects = effects;
-                        this.margin = margin;
-                        this.start = start;
-                        this.end = end;
-                        this.localValues = localValues;
-                        this.isPinned = isPinned;
-                        this.isClicked = isClicked;
-                    }
-                }
-
                 // ALTERNATIVE BEHAVIOUR WHEN THE EXPERIENCE IS EMBEDDED
-                let newScroll = 0
                 const parentPageFunction = event => {
                     if(event.data==undefined || event.data==='Ceros experience has been loaded' || typeof event.data!='string')
                         return
 
                     const datas = JSON.parse(event.data) || {isScrollTrigger: false}
-                    if(datas.isScrollTrigger===true){
-                        updatePageScale()
-                        newScroll = Math.max(-(datas.scrollValue/pageScale), 0)
-                        pageContainer.scrollTop = newScroll
-                    }
+                    if(datas.isScrollTrigger===true)
+                        pageContainer.scrollTop = Math.max(-(datas.scrollValue/pageScale), 0)
                 }
                 if(window.cerosContext.isEmbedded===true){
                     removePinnedContainerListeners()
@@ -105,18 +105,6 @@
                     return (parseFloat(elem.style.top) + parentsTopPositions)
                 }
 
-                const updatePinned = (entries=[pageScroll]) => {
-                    let entry = entries[0].target ?? entries[0]
-                    pinnedContainer.style.position = 'sticky'
-                    pinnedContainer.style.setProperty('z-index', '999')
-                    pinnedContainer.style.overflow = 'visible'
-                    pinnedContainer.style.width = entry.style.width
-                    pinnedContainer.style.height = '0px'
-                    pinnedContainer.style.left = entry.style.left
-                    pinnedContainer.style.top = entry.style.top
-                }
-                const mutation = new MutationObserver(updatePinned)
-
                 // PAGE VARIABLES
                 let currentObjects
                 const pageChangedFunction = pag => {
@@ -126,13 +114,9 @@
                     pageContainer = pageTop.querySelector('div.page-container')
                     pageScroll = pageContainer.querySelector('div.page-scroll')
 
-                    if(pinnedContainer==undefined){
-                        pinnedContainer = document.createElement('div')
-                        pinnedContainer.classList.add('pinned-container')
-                        pageContainer.prepend(pinnedContainer)
-                        mutation.observe(pageScroll, {attributes: true, attributeFilter: ['style']})
-                        pageScroll.style.position = 'static'
-                    }
+                    // CHECKING IF THERE IS PINNED CONTAINER
+                    isContainer = pinnedContainer!=undefined
+                    appendingContainer = isContainer===true ? pinnedContainer : pageContainer 
 
                     currentObjects = scrollObjects.filter(scr => scr.object.page.pageNumber==pageNum)
                     if(pageTop.visited===undefined){
@@ -230,9 +214,6 @@
                         scrollObjects.push(...currentObjects)
 
                         pageContainer.addEventListener("scroll", function(){ scrollFunction(pageContainer, currentObjects) })
-                        // if(pageContainer.style.overflow!='hidden')
-                        // else
-                        //     removePinnedContainerListeners()
                     }
 
                     scrollObjects.forEach(s => s.isClicked = s.start===0)
@@ -258,7 +239,7 @@
                     
                 const scrollFunction = (pageCont, scrollObjs) => {
                     const scrollT = pageCont.scrollTop
-                    
+
                     for(let scrollObj of scrollObjs){
                         let allEffects = scrollObj.effects
                         let effect = null
@@ -275,8 +256,10 @@
                             }
                             if(scrollT>=scrollObj.start && scrollT<scrollObj.end){
                                 scrollObj.node.style.top = `${scrollObj.margin}px`
-                                if(!scrollObj.node.classList.contains('pin')){
-                                    pinnedContainer.append(scrollObj.node)
+                                if(scrollObj.node.classList.contains('pin')===false){
+                                    appendingContainer.append(scrollObj.node)
+                                    if(isContainer===false)
+                                        scrollObj.node.style.position = 'sticky'
                                     scrollObj.node.classList.add('pin')
                                 }
                             }
@@ -285,6 +268,7 @@
                             }
                             if((scrollT<scrollObj.start || scrollT>=scrollObj.end) && scrollObj.node.classList.contains('pin')){
                                 scrollObj.parentElem.append(scrollObj.node)
+                                scrollObj.node.style.position = 'absolute'
                                 scrollObj.node.classList.remove('pin')
                             }
                         }
