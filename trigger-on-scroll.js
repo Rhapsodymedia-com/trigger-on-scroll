@@ -186,7 +186,7 @@
                                     continue
                                 }
                                 if(ranges[r].includes('a') && r===0)
-                                    beginning = Math.max(getDistance(nod) - parseFloat(pageAnchors[parseInt(number, 10)].style.top), 0)
+                                    beginning = getDistance(nod) - parseFloat(pageAnchors[parseInt(number, 10)].style.top)
                                 if(ranges[r].includes('a')){
                                     let anchor = parseInt(number, 10)
                                     ranges[r] = pageAnchors[anchor].style.top
